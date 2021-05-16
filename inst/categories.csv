@@ -1,0 +1,69 @@
+Category,SubCategory,Productivity
+Business,General Business,2
+Business,Accounting,2
+Business,Administration,2
+Business,Sales,2
+Business,Marketing,2
+Business,Customer Relations,2
+Business,Intelligence,2
+Business,Operations,2
+Business,Project Management,2
+Communication & Scheduling,General Communication & Scheduling,0
+Communication & Scheduling,Calendars,0
+Communication & Scheduling,Email,1
+Communication & Scheduling,Instant Message,1
+Communication & Scheduling,Meetings,1
+Communication & Scheduling,Voice,1
+Social Networking,General Social Networking,-2
+Social Networking,Professional Networking,1
+Design & Composition,General Design & Composition,2
+Design & Composition,3D Graphic Design,2
+Design & Composition,Audio Editing,2
+Design & Composition,Graphic Design,2
+Design & Composition,Presentation,2
+Design & Composition,Engineering & Drafting,2
+Design & Composition,Video Editing,2
+Design & Composition,Writing,2
+Entertainment,General Entertainment,-2
+Entertainment,Comedy,-2
+Entertainment,Games,-2
+Entertainment,Music,-2
+Entertainment,Photos,-2
+Entertainment,Video,-2
+News & Opinion,General News & Opinion,-2
+News & Opinion,Business,-1
+News & Opinion,Entertainment,-2
+News & Opinion,Society,-2
+News & Opinion,Science & Technology,-1
+News & Opinion,Sports,-1
+News & Opinion,Regional,-2
+News & Opinion,International,-2
+Reference & Learning,General Reference & Learning,2
+Reference & Learning,Business & Finance,1
+Reference & Learning,Employment,2
+Reference & Learning,Food,1
+Reference & Learning,Health & Medicine,1
+Reference & Learning,Home & Garden,0
+Reference & Learning,Legal & Gov't,1
+Reference & Learning,Maps & Regional,1
+Reference & Learning,Engineering & Technology,1
+Reference & Learning,Search,1
+Reference & Learning,Travel & Outdoors,1
+Software Development,General Software Development,2
+Software Development,Design & Planning,2
+Software Development,Editing & IDEs,2
+Software Development,Quality Assurance,2
+Software Development,Systems Operations,2
+Software Development,Data Modeling & Analysis,2
+Shopping,General Shopping,-2
+Shopping,Office,-2
+Shopping,Electronics,-2
+Shopping,Clothes & Personal,-2
+Utilities,General Utilities,1
+Utilities,Anti-Virus & Spyware,1
+Utilities,Browsers,0
+Utilities,Internet Utilities,1
+Utilities,File Sharing,-2
+Utilities,Virtualization,0
+Utilities,Other,0
+Uncategorized,Uncategorized,0

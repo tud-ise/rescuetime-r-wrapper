@@ -1,0 +1,18 @@
+Package: rescuetimewrapper
+Type: Package
+Title: RescueTime Wrapper
+Version: 1.0.0
+Author: Niko Wenzl
+Maintainer: Niko Wenzl <niko.wenzl@stud.tu-darmstadt.de>
+Description: Wrapper for Accessing complete or anonymized data from the RescueTime API
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    httr,
+    lubridate,
+    stringr
+Depends: 
+    R (>= 2.10)
