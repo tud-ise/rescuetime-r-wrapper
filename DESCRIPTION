@@ -1,7 +1,7 @@
 Package: rescuetimewrapper
 Type: Package
 Title: RescueTime Wrapper
-Version: 1.0.0
+Version: 1.1.0
 Author: Niko Wenzl
 Maintainer: Niko Wenzl <niko.wenzl@stud.tu-darmstadt.de>
 Description: Wrapper for Accessing complete or anonymized data from the RescueTime API

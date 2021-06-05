@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{get_rescue_time_data}
 \alias{get_rescue_time_data}
-\title{Get RescueTime Data based on an API Key
+\title{Get RescueTime Data based on an API Key.
 The Data is returned unfiltered}
 \usage{
 get_rescue_time_data(
@@ -28,7 +28,7 @@ get_rescue_time_data(
 table with complete data
 }
 \description{
-Get RescueTime Data based on an API Key
+Get RescueTime Data based on an API Key.
 The Data is returned unfiltered
 }
 \examples{

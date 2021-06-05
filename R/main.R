@@ -30,16 +30,22 @@ get_rescue_time_data <- function (key, dateFrom, dateTo, scope = "Activity", tra
   )
 
   # parse data
-  activity_data <- content(res, "parsed")
+  if (status_code(res) == 200) {
+    activity_data <- content(res, "parsed")
 
-  if (transform) {
-    colnames(activity_data)[colnames(activity_data) == "Time Spent (seconds)"] <- "Time"
-    colnames(activity_data) <- stringr::str_replace_all(colnames(activity_data),"[:punct:]|[:space:]|[/+]","")
-    activity_data <- transform(activity_data, Date = strftime(Date, "%Y-%m-%d"))
-    return(transform_data(activity_data, "Date", scope,  c("Time")))
+    if (transform) {
+      colnames(activity_data)[colnames(activity_data) == "Time Spent (seconds)"] <- "Time"
+      colnames(activity_data) <- stringr::str_replace_all(colnames(activity_data),"[:punct:]|[:space:]|[/+]","")
+      activity_data <- transform(activity_data, Date = strftime(Date, "%Y-%m-%d"))
+      return(transform_data(activity_data, "Date", scope,  c("Time")))
+    } else {
+      return(activity_data)
+    }
   } else {
-    return(activity_data)
+    print(paste("Keine Daten von Server erhalten (Error Code ", status_code(res), ")"))
+    return(NULL)
   }
+
 }
 
 #' Get RescueTime Data based on an API Key.
@@ -61,54 +67,58 @@ get_rescue_time_data_anonymized <- function (key, dateFrom, dateTo, scope = "Cat
   library(dplyr)
   activity_data <- get_rescue_time_data(key, dateFrom, dateTo, "Activity", FALSE)
 
-  csv_path <- system.file("categories.csv", package="rescuetimewrapper")
-  categories <- read.csv(csv_path)
+  if(!is.null(activity_data) && ncol(activity_data) > 0) {
+    csv_path <- system.file("categories.csv", package="rescuetimewrapper")
+    categories <- read.csv(csv_path)
 
-  # join with categories
-  joined_data <- merge(
-    categories,
-    activity_data,
-    by.x = "SubCategory",
-    by.y = "Category",
-    all = TRUE,
-  )
+    # join with categories
+    joined_data <- merge(
+      categories,
+      activity_data,
+      by.x = "SubCategory",
+      by.y = "Category",
+      all = TRUE,
+    )
 
-  # productivity index
-  productivity_index <- activity_data %>%
-    group_by(Date) %>%
-    summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
-  names(productivity_index)<-c("Date","Productivity Index")
-  productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
+    # productivity index
+    productivity_index <- activity_data %>%
+      group_by(Date) %>%
+      summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
+    names(productivity_index)<-c("Date","Productivity Index")
+    productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
 
-  # anonymize data by aggreagting over categories
-  anomymized_data <- aggregate(x = joined_data$`Time Spent (seconds)`,
-                               by = list(joined_data[,scope], joined_data$Date),
-                               FUN = sum)
-  colnames(anomymized_data) <- c("Category", "Date","Time Spent (seconds)")
+    # anonymize data by aggreagting over categories
+    anomymized_data <- aggregate(x = joined_data$`Time Spent (seconds)`,
+                                 by = list(joined_data[,scope], joined_data$Date),
+                                 FUN = sum)
+    colnames(anomymized_data) <- c("Category", "Date","Time Spent (seconds)")
 
-  all_data <- expand.grid(unique(na.omit(categories[,scope])),
-                          unique(na.omit(joined_data$Date)),
-                          "Time Spent (seconds)"=NA)
-  colnames(all_data) <- c("Category", "Date","Time Spent (seconds)")
-  result <- select(merge(all_data, anomymized_data, by = c("Category", "Date"), all=TRUE),-"Time Spent (seconds).x")
-  colnames(result) <- c("Category", "Date","Time")
+    all_data <- expand.grid(unique(na.omit(categories[,scope])),
+                            unique(na.omit(joined_data$Date)),
+                            "Time Spent (seconds)"=NA)
+    colnames(all_data) <- c("Category", "Date","Time Spent (seconds)")
+    result <- select(merge(all_data, anomymized_data, by = c("Category", "Date"), all=TRUE),-"Time Spent (seconds).x")
+    colnames(result) <- c("Category", "Date","Time")
 
-  # add number of Applications for each row
-  for (row in 1:nrow(result)) {
-    current_category <- toString(result[row, "Category"])
-    current_date <- result[row, "Date"]
-    result[row, "Number of Applications"] <- length(which(joined_data[,scope] == current_category & joined_data$Date == current_date))
-  }
+    # add number of Applications for each row
+    for (row in 1:nrow(result)) {
+      current_category <- toString(result[row, "Category"])
+      current_date <- result[row, "Date"]
+      result[row, "Number of Applications"] <- length(which(joined_data[,scope] == current_category & joined_data$Date == current_date))
+    }
 
-  if (transform) {
-    colnames(result)[colnames(result) == "Time Spent (seconds)"] <- "Time"
-    colnames(result) <- stringr::str_replace_all(colnames(result),"[:punct:]|[:space:]|[+]","")
-    result <- transform(result, Date = strftime(Date, "%Y-%m-%d"))
-    transformed_result <- transform_data(result, "Date", scope, c("Time", "NumberofApplications"))
-    data_with_productivity <- merge(transformed_result, productivity_index, by = "Date", all = TRUE)
-    return(data_with_productivity)
+    if (transform) {
+      colnames(result)[colnames(result) == "Time Spent (seconds)"] <- "Time"
+      colnames(result) <- stringr::str_replace_all(colnames(result),"[:punct:]|[:space:]|[+]","")
+      result <- transform(result, Date = strftime(Date, "%Y-%m-%d"))
+      transformed_result <- transform_data(result, "Date", scope, c("Time", "NumberofApplications"))
+      data_with_productivity <- merge(transformed_result, productivity_index, by = "Date", all = TRUE)
+      return(data_with_productivity)
+    } else {
+      return(result)
+    }
   } else {
-    return(result)
+    return(NULL)
   }
 }
 
@@ -162,12 +172,16 @@ get_productivity_index <- function(key, dateFrom, dateTo) {
   library(dplyr)
   activity_data <- get_rescue_time_data(key, dateFrom, dateTo, "Activity", FALSE)
 
-  # productivity index
-  productivity_index <- activity_data %>%
-    group_by(Date) %>%
-    summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
-  names(productivity_index)<-c("Date","Productivity Index")
-  productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
+  if(!is.null(activity_data) && ncol(activity_data) > 0) {
+    # productivity index
+    productivity_index <- activity_data %>%
+      group_by(Date) %>%
+      summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
+    names(productivity_index)<-c("Date","Productivity Index")
+    productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
 
-  return(productivity_index)
+    return(productivity_index)
+  } else {
+      return(NULL)
+  }
 }

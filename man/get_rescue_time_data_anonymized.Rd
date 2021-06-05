@@ -2,7 +2,7 @@
 % Please edit documentation in R/main.R
 \name{get_rescue_time_data_anonymized}
 \alias{get_rescue_time_data_anonymized}
-\title{Get RescueTime Data based on an API Key
+\title{Get RescueTime Data based on an API Key.
 The Data is return anonymized according to the category definitions on package level}
 \usage{
 get_rescue_time_data_anonymized(
@@ -28,7 +28,7 @@ get_rescue_time_data_anonymized(
 table with an entry for each category for each day
 }
 \description{
-Get RescueTime Data based on an API Key
+Get RescueTime Data based on an API Key.
 The Data is return anonymized according to the category definitions on package level
 }
 \examples{
