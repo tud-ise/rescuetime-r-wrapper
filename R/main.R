@@ -67,7 +67,7 @@ get_rescue_time_data_anonymized <- function (key, dateFrom, dateTo, scope = "Cat
   library(dplyr)
   activity_data <- get_rescue_time_data(key, dateFrom, dateTo, "Activity", FALSE)
 
-  if(!is.null(activity_data) && ncol(activity_data) > 0) {
+  if(!is.null(activity_data) && ncol(activity_data) > 0 && nrow(activity_data) > 0) {
     csv_path <- system.file("categories.csv", package="rescuetimewrapper")
     categories <- read.csv(csv_path)
 
@@ -172,7 +172,7 @@ get_productivity_index <- function(key, dateFrom, dateTo) {
   library(dplyr)
   activity_data <- get_rescue_time_data(key, dateFrom, dateTo, "Activity", FALSE)
 
-  if(!is.null(activity_data) && ncol(activity_data) > 0) {
+  if(!is.null(activity_data) && ncol(activity_data) > 0 && nrow(activity_data) > 0) {
     # productivity index
     productivity_index <- activity_data %>%
       group_by(Date) %>%
