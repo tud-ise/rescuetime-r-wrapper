@@ -84,7 +84,7 @@ get_rescue_time_data_anonymized <- function (key, dateFrom, dateTo, scope = "Cat
     productivity_index <- activity_data %>%
       group_by(Date) %>%
       summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
-    names(productivity_index)<-c("Date","Productivity Index")
+    names(productivity_index)<-c("Date","Productivity_Index")
     productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
 
     # anonymize data by aggreagting over categories
@@ -177,7 +177,7 @@ get_productivity_index <- function(key, dateFrom, dateTo) {
     productivity_index <- activity_data %>%
       group_by(Date) %>%
       summarise(weighted.mean(Productivity, `Time Spent (seconds)`))
-    names(productivity_index)<-c("Date","Productivity Index")
+    names(productivity_index)<-c("Date","Productivity_Index")
     productivity_index <- transform(productivity_index, Date = strftime(Date, "%Y-%m-%d"))
 
     return(productivity_index)
